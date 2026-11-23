@@ -343,10 +343,12 @@ async function hydrateAssetUrls() {
 async function loadLibrary() {
   const settingsResult = await state.supabase.from('site_settings').select('*').eq('id', true).maybeSingle();
   const entriesResult = await state.supabase.from('entries').select('*').order('kind').order('shelf').order('sort_order');
-  if (settingsResult.error || entriesResult.error) {
-    showNotice((settingsResult.error || entriesResult.error).message, 'error');
-    return;
-  }
+ if (settingsResult.error || entriesResult.error) {
+  const message = (settingsResult.error || entriesResult.error).message;
+  renderLogin('The library could not open yet: ' + message);
+  showNotice(message, 'error');
+  return;
+}
   state.settings = settingsResult.data ? { ...defaultSettings, ...settingsResult.data } : { ...defaultSettings };
   state.entries = entriesResult.data || [];
   await hydrateAssetUrls();

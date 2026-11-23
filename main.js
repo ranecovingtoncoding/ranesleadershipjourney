@@ -615,6 +615,7 @@ async function boot() {
     return;
   }
   state.supabase = createClient(config.url, config.key);
+  renderLogin('Opening your private library...');
   const result = await state.supabase.auth.getSession();
   if (result.data.session) {
     await startPrivateSession(result.data.session);
